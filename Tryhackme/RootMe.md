@@ -1,4 +1,4 @@
-# RootMe (TryHackMe)
+# RootMe - TryHackMe
 
 - Objetivo: Obtener acceso al sistema y escalar privilegios hasta root.
 - Fecha: 12/06/2025
