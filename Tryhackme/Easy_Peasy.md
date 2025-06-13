@@ -81,7 +81,7 @@ gobuster dir -u http://10.10.44.25 -w /usr/share/dirb/wordlists/big.txt -x html,
 /robots.txt           (Status: 200) [Size: 43]
 /robots.txt           (Status: 200) [Size: 43]
 ````
-he entrado al robots, donde en el user agent habia un code, he mirado cob:
+He entrado al robots, donde en el user agent habia un code, he mirado cob:
 ````
 hashid "a18672860d0510e5ab6699730763b250"                   
 Analyzing 'a18672860d0510e5ab6699730763b250'
@@ -150,7 +150,7 @@ Analyzing '940d71e8655ac41efb5f8ab850668505b86dd64186a66e57d1483e7f5fe6fd81'
 [+] Skein-256 
 [+] Skein-512(256)
 ````
-nos metemos en la página de md5hashing.net que he puesto el enlace antes e intentamos hacer una prueba: 
+Nos metemos en la página de md5hashing.net que he puesto el enlace antes e intentamos hacer una prueba: 
 Efectivamente Esta sería la Flag6
 ````
 mypasswordforthatjob
@@ -168,17 +168,17 @@ username:boring
 password:
 01101001 01100011 01101111 01101110 01110110 01100101 01110010 01110100 01100101 01100100 01101101 01111001 01110000 01100001 01110011 01110011 01110111 01101111 01110010 01100100 01110100 01101111 01100010 01101001 01101110 01100001 01110010 01111001
 ````
-vemos que esta en bonario el passowrd, vamos a pasarlo por cyberchef:
+Vemos que esta en bonario el passowrd, vamos a pasarlo por cyberchef:
 ````
 iconvertedmypasswordtobinary
 ````
-y tenemos tambén el usuario
+Y tenemos tambén el usuario
 
 Entremos por ssh 
 ````
 $ sudo ssh boring@10.10.44.25 -p 6498
 ````
-ya estamos dentro 
+Estamos dentro 
 
 Ahora dentro del user hay una flag, pero tambén esta codificada
 nos da esto:
