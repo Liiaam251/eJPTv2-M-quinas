@@ -1,4 +1,4 @@
-# All in One - TryHackMe
+# Bounty Hacker - TryHackMe
 
 - Objetivo: Obtener acceso al sistema y escalar privilegios hasta root.
 - Fecha: 12/06/2025
