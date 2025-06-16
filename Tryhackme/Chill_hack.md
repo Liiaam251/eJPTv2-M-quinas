@@ -108,4 +108,4 @@ Progress: 80000 / 80004 (100.00%)
 Finished
 ````
 Lo que más me llama la atención es el /secret vamos dentro para ver que hay:
-![Imagen Panel](imagenes/imagen_comandos.PNG)
+![Imagen Panel](imagenes/imagen_comandos.png)
