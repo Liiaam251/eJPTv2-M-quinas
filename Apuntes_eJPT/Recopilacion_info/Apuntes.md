@@ -72,7 +72,32 @@ sublist3r -d dominio.com -e google,brave,yahoo
 ### DNS
 
 DNS es el sistema que traduce nombres de dominio legibles (como google.com) en direcciones IP
-HERRAMIENTAS COMO DNSZONE o DUMPDNS:
+### HERRAMIENTAS
 DNS Zone o herramientas como DumpDNS.com sirven para obtener información detallada sobre los registros DNS de un dominio, como subdominios, registros A, MX, TXT, y más. Esto es útil en pentesting para descubrir infraestructura oculta, identificar vectores de ataque y mapear la red objetivo
+
+dnsrecon es una herramienta de enumeración DNS incluida en Kali Linux que se utiliza para:
+
+Enumerar registros DNS (A, NS, MX, TXT, etc.)
+
+Hacer brute force de subdominios
+
+Detectar transferencias de zona (zone transfer)
+
+Consultar servidores DNS específicos
+
+Realizar búsquedas inversas (PTR)
+
+### Tipos comunes de registros DNS:
+
+| Tipo      | Significado        | ¿Para qué sirve?                                                                        | Ejemplo                                               |
+| --------- | ------------------ | --------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **A**     | Address            | Asocia un dominio con una IP **IPv4**.                                                  | `ejemplo.com → 192.168.1.100`                         |
+| **AAAA**  | IPv6 Address       | Asocia un dominio con una IP **IPv6**.                                                  | `ejemplo.com → 2001:db8::1`                           |
+| **MX**    | Mail Exchange      | Define los servidores que manejan el **correo** del dominio.                            | `ejemplo.com → mail.google.com (prioridad 10)`        |
+| **NS**    | Name Server        | Indica qué servidores DNS tienen autoridad sobre el dominio.                            | `ejemplo.com → ns1.dnsprovider.com`                   |
+| **TXT**   | Texto              | Guarda texto libre. Usado para **verificación** y seguridad de email (SPF, DKIM, etc.). | `ejemplo.com → "v=spf1 include:_spf.google.com ~all"` |
+| **CNAME** | Canonical Name     | Hace que un subdominio sea un **alias de otro dominio**.                                | `blog.ejemplo.com → midominio.wordpress.com`          |
+| **PTR**   | Pointer            | Traduce una IP en su **nombre de dominio** (DNS inverso).                               | `192.0.2.1 → ejemplo.com`                             |
+| **SOA**   | Start of Authority | Contiene info técnica de la zona DNS (admin, tiempo de refresco, etc.).                 | `ejemplo.com → SOA → ns1.dnsprovider.com`             |
 
 
