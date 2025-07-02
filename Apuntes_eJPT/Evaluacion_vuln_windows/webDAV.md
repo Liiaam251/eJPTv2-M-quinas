@@ -87,15 +87,54 @@ Este comando intentará acceder a `http://192.168.1.100/webdav/` con usuarios y 
 
 ---
 
-## 5. Pasos para descargar archivos con davtest y herramientas complementarias
+## 5. Uso de Cadaver para interactuar con WebDAV desde la terminal
 
-1. Ejecuta `davtest` para identificar métodos habilitados.
-2. Si hay acceso anónimo o con credenciales válidas, navega por las rutas públicas o sube archivos para pruebas.
-3. Usa herramientas como `curl`, `wget` o clientes WebDAV para descargar archivos descubiertos.
+`cadaver` es un cliente WebDAV en consola que permite navegar y manipular recursos WebDAV de forma interactiva.
+
+### a) Conectar al servidor WebDAV
+
+```bash
+cadaver http://<IP_objetivo>/<ruta_webdav>
+```
+
+Ejemplo:
+
+```bash
+cadaver http://192.168.1.100/webdav/
+```
+
+### b) Comandos básicos dentro de Cadaver
+
+- `ls` — Listar archivos y carpetas.
+- `cd <directorio>` — Cambiar de directorio.
+- `get <archivo>` — Descargar un archivo localmente.
+- `put <archivo>` — Subir un archivo desde tu máquina.
+- `rm <archivo>` — Eliminar un archivo remoto.
+- `mkdir <directorio>` — Crear un directorio remoto.
+- `exit` — Salir de la sesión.
+
+### c) Ejemplo de sesión
+
+```bash
+$ cadaver http://192.168.1.100/webdav/
+dav:/webdav/> ls
+archivo1.txt  carpeta1/
+dav:/webdav/> cd carpeta1
+dav:/webdav/carpeta1/> get archivo2.txt
+dav:/webdav/carpeta1/> exit
+```
 
 ---
 
-## 6. Consideraciones de seguridad
+## 6. Pasos para descargar archivos con davtest, cadaver y herramientas complementarias
+
+1. Ejecuta `davtest` para identificar métodos habilitados.
+2. Si hay acceso anónimo o con credenciales válidas, navega por las rutas públicas o sube archivos para pruebas.
+3. Usa herramientas como `curl`, `wget` o clientes WebDAV como `cadaver` para descargar archivos descubiertos.
+
+---
+
+## 7. Consideraciones de seguridad
 
 - WebDAV mal configurado puede permitir subida de malware o exfiltración de datos.
 - Siempre realiza pruebas autorizadas.
