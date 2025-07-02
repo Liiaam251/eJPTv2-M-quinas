@@ -3,59 +3,67 @@
 ## 1. SMB (Server Message Block)
 
 - Protocolo para compartir archivos, impresoras y comunicación entre nodos.
+- Usa principalmente **puerto TCP 445**.
 - Vulnerabilidades famosas:  
-  - **EternalBlue (MS17-010)**: permite ejecución remota de código explotando SMBv1.  
-  - Configuraciones incorrectas pueden permitir relay attacks o acceso anónimo.
-- Recomendaciones: Deshabilitar SMBv1 y mantener actualizado.
-
+  - **EternalBlue (MS17-010)**: Explota SMBv1 para ejecución remota de código.  
+  - Configuraciones erróneas permiten relay attacks o acceso anónimo.
+- Deshabilitar SMBv1 es clave para la seguridad.
+- Herramientas como `crackmapexec` o `enum4linux` permiten enumerar usuarios y recursos SMB.
+  
 ## 2. RDP (Remote Desktop Protocol)
 
-- Permite acceso remoto a escritorios Windows.
-- Vulnerabilidades frecuentes:  
-  - Ataques de fuerza bruta.  
-  - Vulnerabilidades como **BlueKeep** permiten ejecución remota.  
-  - Configuraciones débiles o sin autenticación de red (NLA).
-- Recomendaciones: Usar VPN, NLA habilitado y contraseñas fuertes.
+- Permite acceso remoto con interfaz gráfica (GUI) a sistemas Windows.
+- Usa por defecto **puerto TCP 3389**.
+- Está **habilitado por defecto en ediciones Server**, pero **deshabilitado en clientes Windows** (10, 11) y debe activarse manualmente.
+- Vulnerabilidades conocidas incluyen **BlueKeep**, ataques de fuerza bruta y falta de NLA (autenticación a nivel de red).
+- Se recomienda habilitar NLA, usar VPN y contraseñas fuertes.
 
-## 3. RPC (Remote Procedure Call)
+## 3. IIS (Internet Information Services)
 
-- Facilita comunicación entre procesos en red.
-- Vulnerabilidades:  
-  - Explotación para ejecución remota o escalada de privilegios.  
-  - Ataques como **MS03-026**.
-- Recomendaciones: Aplicar parches y limitar acceso.
+- Servidor web nativo de Windows.
+- Escucha en **puerto TCP 80** (HTTP) y **443** (HTTPS si está configurado SSL).
+- Soporta extensiones como **WebDAV**, que permite edición colaborativa de archivos a través de HTTP(S).
+- Mal configurado puede ser vector para inyección, ejecución remota y filtración de información.
 
-## 4. WMI (Windows Management Instrumentation)
+## 4. WinRM (Windows Remote Management)
 
-- Servicio para administración remota y automatización.
-- Usado por atacantes para movimiento lateral y ejecución de comandos sin ser detectados.
-- Recomendaciones: Monitorizar su uso y restringir acceso.
+- Servicio para administración remota basado en WS-Management.
+- Escucha en **puerto 5985 (HTTP)** y **5986 (HTTPS/SSL)**.
+- Usado para ejecución remota de comandos y gestión automatizada.
+- Puede ser explotado para movimiento lateral si está mal configurado o con credenciales débiles.
 
-## 5. IIS (Internet Information Services)
+## 5. RPC (Remote Procedure Call)
 
-- Servidor web de Windows.
-- Vulnerabilidades comunes:  
-  - Fallos en configuraciones predeterminadas.  
-  - Inyecciones, vulnerabilidades en aplicaciones web alojadas.
-- Recomendaciones: Actualizar, endurecer configuración y monitorear logs.
+- Facilita la comunicación entre procesos y servicios remotos.
+- Usado internamente por varios servicios de Windows.
+- Históricamente explotado para ejecución remota (p.ej., MS03-026).
+- Normalmente opera en **puertos dinámicos** asignados por el sistema, pero también el **135 TCP** para el servicio principal.
 
 ## 6. NetBIOS
 
-- Servicios de red para compartir recursos.
-- Vulnerabilidades:  
-  - Enumeración de usuarios y recursos.  
-  - Ataques de spoofing y sniffing.
-- Recomendaciones: Deshabilitar si no es necesario y filtrar en firewall.
+- Protocolo de soporte para SMB en versiones antiguas.
+- Usa puertos **137-139 TCP/UDP**.
+- Puede permitir enumeración de usuarios y recursos si está expuesto.
 
-## 7. SQL Server
+---
 
-- Base de datos Microsoft SQL.
-- Vulnerabilidades:  
-  - Contraseñas débiles.  
-  - Inyección SQL en aplicaciones.
-- Recomendaciones: Actualizar, usar contraseñas fuertes y validar entradas.
+# Protocolos y Puertos Clave en Windows
 
-## Referencias
+| Servicio/Protocolo | Puerto(s)       | Función                              |
+|--------------------|-----------------|------------------------------------|
+| SMB                | 445 TCP         | Compartición archivos e impresión  |
+| RDP                | 3389 TCP        | Acceso remoto con GUI               |
+| IIS (HTTP/HTTPS)   | 80 / 443 TCP     | Servidor web y WebDAV               |
+| WinRM              | 5985/5986 TCP   | Administración remota               |
+| RPC                | 135 TCP + dinámicos | Comunicación entre procesos       |
+| NetBIOS            | 137-139 TCP/UDP | Soporte antiguo para SMB            |
 
-- [Microsoft Security Updates](https://msrc.microsoft.com/)
-- [OWASP Windows Security](https://owasp.org/www-project-windows-security/)
+---
+
+# Conceptos Clave Relacionados
+
+- **SMBv1**: Vulnerable y deshabilitado por defecto en sistemas modernos para evitar ataques como EternalBlue.
+- **RDP**: Para acceso gráfico remoto; requiere configuración en clientes Windows para activarse.
+- **WebDAV**: Extensión de IIS para edición remota colaborativa, utiliza HTTP/HTTPS.
+- **WinRM**: Facilita administración remota segura (cuando usa SSL).
+- **Protección en RDP y SMB**: Requiere contraseñas fuertes, autenticación a nivel de red (NLA para RDP), y actualizaciones frecuentes para mitigar vulnerabilidades.
