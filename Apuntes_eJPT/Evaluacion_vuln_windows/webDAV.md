@@ -139,6 +139,3 @@ dav:/webdav/carpeta1/> exit
 - WebDAV mal configurado puede permitir subida de malware o exfiltración de datos.
 - Siempre realiza pruebas autorizadas.
 
----
-
-¿Quieres que te prepare un README completo o ejemplos prácticos para tus apuntes?
