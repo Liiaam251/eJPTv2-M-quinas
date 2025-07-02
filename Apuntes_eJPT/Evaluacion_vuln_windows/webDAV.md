@@ -40,6 +40,7 @@ nmap -p 80,443 --script http-webdav-scan <IP_objetivo>
 davtest -url http://<IP_objetivo>/
 ```
 
+
 Esto prueba métodos HTTP como PROPFIND, PUT, DELETE, MOVE, LOCK, etc.
 
 ### b) Probar subida de archivos (PUT)
@@ -86,6 +87,10 @@ hydra -L users.txt -P passwords.txt 192.168.1.100 http-get /webdav/ -s 80 -V
 Este comando intentará acceder a `http://192.168.1.100/webdav/` con usuarios y contraseñas listados, mostrando resultados en pantalla.
 
 ---
+### Conectarse con credenciales:
+````
+davtest -auth user:password -url http://dominio/path
+````
 
 ## 5. Uso de Cadaver para interactuar con WebDAV desde la terminal
 
