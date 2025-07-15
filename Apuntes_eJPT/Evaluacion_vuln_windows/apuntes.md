@@ -58,8 +58,4 @@
 - **Rootkits y bootkits**  
   - Persistencia profunda en el sistema.
 
-## Referencias
-
-- [Microsoft Security Response Center](https://msrc.microsoft.com/)
-- [CVE Details - Microsoft Windows](https://www.cvedetails.com/product/1145/Microsoft-Windows.html)
 
