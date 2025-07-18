@@ -19,26 +19,16 @@ RDP afecta principalmente a:
 
 ## 2. Cómo identificar un servicio RDP expuesto
 
-### Escaneo básico con Nmap
+### Escaneo básico con `scanner/rdp/rdp_scanner`
 
-Detecta si el puerto 3389 está abierto y si responde como RDP:
 ```
-nmap -p 3389 <IP_OBJETIVO> -sV
+msfconsole
+use auxiliary/scanner/rdp/rdp_scanner
+set RHOSTS <IP_OBJETIVO>
+set THREADS 10
+set RPORT 3389
+run
 ```
-
-Con un script NSE para más detalles:
-```
-nmap -p 3389 --script rdp-ntlm-info <IP_OBJETIVO>
-```
-
-O con una herramienta específica:
-```
-rdpscan <IP_OBJETIVO>
-```
-*(rdpscan es una herramienta rápida para detectar la vulnerabilidad BlueKeep y versión del RDP).*
-
----
-
 ## 3. Vulnerabilidades conocidas en RDP
 
 - **CVE-2019-0708 (BlueKeep)**
